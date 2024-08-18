@@ -1,0 +1,157 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>MoneyLion DS Assessment</title>
+<style type="text/css">
+body,td,th {
+	color: #FFFCFC;
+}
+body {
+	background-color: #070707;
+}
+table {
+    color: #D3D3D3; /* 表格文字颜色为浅灰色 */
+    font-size: 16px; /* 表格文字大小为16px */
+}
+th {
+    color: #B0C4DE; /* 列标题使用更浅的灰色 */
+}
+</style>
+</head>
+
+<body>
+<h1>DS Assesment Report——Pan Luochuan</h1>
+<h2> EDA</h2>
+<h3>1. Identify variables + integrate data</h3>
+<p>Merge the 'clearfraudscore' column in loan.csv, payment.csv and clarity_underwriting_variables.csv. According to the data query, the 'clearfraudscore' may be calculated based on the first few columns in clarity_underwriting_variables.csv, applicant information verification, behavior analysis, etc. Therefore, for clarity_underwriting_variables.csv, only consider merging the 'clearfraudscore' column.</p>
+<p>Filter out loans that have been funded (isFunded = 1). Only consider loans that have been funded, as only these loans have actually entered the repayment stage. Suitable for predicting repayment behavior and risk.</p>
+<h3>2. Missing Value Handling</h3>
+<p>The following picture is the situation after data cleaning.</p>
+<p><img src="1723540771590.png" width="291" height="534" alt=""/></p>
+<h3>3. Add target variable</h3>
+<p>Based on the data query, I divided the ‘LoanStatus’ column into low risk, medium risk, high risk, and very high risk, and created a new column ‘Risk_Level’ based on the division as the target variable for subsequent analysis. The specific divisions are as follows:</p>
+<table width="797" border="1">
+  <thead>
+    <tr>
+      <td width="206"><strong>Loan Status</strong></td>
+      <td width="368"><strong>Definition</strong></td>
+      <td width="100"><strong>Risk</strong></td>
+      <td width="95"><strong>Risk_Level</strong></td>
+    </tr>
+  </thead>
+	<tbody>
+    <tr>
+      <td>Paid Off Loan</td>
+      <td>A loan that has been fully repaid.</td>
+      <td>Low Risk</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>New Loan</td>
+      <td>A newly issued loan.</td>
+      <td>Medium Risk</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Internal Collection</td>
+      <td>After a loan defaults, internal collection attempts to recover the loan.</td>
+      <td>High Risk</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>External Collection</td>
+      <td> After a loan defaults, an external agency intervenes to recover the loan.</td>
+      <td>High Risk</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>Returned Item</td>
+      <td> A single repayment failure caused by insufficient funds.</td>
+      <td>Medium Risk</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Pending Paid Off</td>
+      <td>A loan is in a state of being fully repaid.</td>
+      <td>Low Risk</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>Charged Off Paid Off</td>
+      <td>A loan that was originally written off is finally repaid.</td>
+      <td>Medium Risk</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Settled Bankruptcy</td>
+      <td>A loan that is resolved through legal procedures due to the applicant's bankruptcy.</td>
+      <td>Very High Risk</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>Settlement Paid Off</td>
+      <td> A loan that is fully repaid through settlement.</td>
+      <td>Medium Risk</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Charged Off</td>
+      <td>A loan is deemed unrecoverable by a bank or lending institution and is included in bad debts.</td>
+      <td>Very High Risk</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>Settlement Pending Paid Off</td>
+      <td>A loan is being repaid through settlement.</td>
+      <td>Medium Risk</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+<h3>4. Visual Analytics</h3>
+<p><strong>Loan Status Distribution </strong>: It can be seen that among the loan statuses of the obtained loans, External Collection accounts for the largest proportion, followed by Paid Off Loan. There is no Charged Off status.</p>
+<p><img src="LoanStatus.png" width="870" height="662" alt=""/></p>
+<p><strong>Loan Status by State : </strong>Ohio has the highest default rate, while Illinois and Ohio have the highest default rates in the &quot;new loans&quot; and &quot;repaid loans&quot; categories compared to other states. This is also closely related to the local economic scale and population size, which also means there is a greater market demand.Financial institutions can assess the risks and benefits of different regions and formulate corresponding strategies</p>
+<p><img src="loan_status_state.png" width="1014" height="701" alt=""/></p>
+<p><strong>Risk Levels  Distribution</strong> : The data distribution is uneven, and more data supplementation is needed later. </p>
+<p>High risk accounts for the largest proportion, and extremely high risk accounts for the smallest proportion. Different loan strategies can be formulated based on different risk levels, as well as how they affect the user's subsequent credit rating, etc.</p>
+<p><img src="Risklevel.png" width="879" height="556" alt=""/></p>
+<p><strong>Distribution of loan amounts by risk level : </strong>There are more outliers in the low-risk loan amount, and there are more ultra-high-amount loans. There are not too many ultra-high-amount loans in the extremely high-risk. This should be attributed to the fact that financial institutions have formulated corresponding loan strategies according to different risks to reduce the risk of financial institutions collecting funds.</p>
+<p><img src="r_loan.png" width="870" height="380" alt=""/></p>
+<p><strong>Amount of loans issued : </strong>The state with the most loans issued is Ohio, followed by Illinois and then California.</p>
+<div style="width:100%; height: 600px;"> <!-- 确保这里的style中height属性正确设置 -->
+<iframe src="map2.html" style="width:100%; height:100%; border:none;"></iframe>
+<p><strong>Average Annual Percentage Rate by State :</strong> The three states with the highest annual interest rates are Alabama, North Dakota and New Mexico.</p>
+<p>This may be related to the local economy, because combined with the above figure, we can see that the states with more total loans have lower annual interest rates, while the states with less total loans have higher annual interest rates.</p>
+<div style="width:100%; height: 600px;"> <!-- 确保这里的style中height属性正确设置 -->
+<iframe src="map3.html" style="width:100%; height:100%; border:none;"></iframe>
+<p><strong>Distribution of Clear Fraud Score by Loan Status : </strong>The overall fraud clarity score in the Extternal Collection state is the lowest among the other states, and the Charged Off Paid Off score is the highest.</p>
+<div style="width:100%; height: 600px;"> <!-- 确保这里的style中height属性正确设置 -->
+<iframe src="map4.html" style="width:100%; height:100%; border:none;"></iframe>
+<p><strong>Distribution of Clear Fraud Score by Risk_Level : </strong>The distribution of high-risk clear fraud score is the most widespread, and the distribution of low-risk clear fraud score is the highest.</p>
+<div style="width:100%; height: 600px;"> <!-- 确保这里的style中height属性正确设置 -->
+  <iframe src="map4.html" style="width:100%; height:100%; border:none;"></iframe>
+  <p><strong>Feature Correlation : </strong>The strongest positive correlation with Risk_level is Rejected, fpStatus and Cancelled, and the strongest negative correlation is Checked</p>
+  <p><img src="matrix.png" width="900" height="900" alt=""/></p>
+  <h3>5. Delete unnecessary columns and adjust format</h3>
+  <p><img src="1723553439733.png" width="496" height="423" alt=""/></p>
+  <h2>Model Training</h2>
+  <h3>1. XGboost</h3>
+  <p>Combine RandomizedSearchCV to optimize model parameters.</p>
+  <p>The most important feature in this model is clearfraudscore, followed by originallyScheduledPaymentAmount</p>
+  <p><img src="xg.png" width="843" height="463" alt=""/></p>
+  <p>The AUC score of the model is: 0.912</p>
+  <p>The performance is better in class 0 and class 2. Due to the small number of samples in class 3, the model failed to learn enough information to make accurate predictions.</p>
+  <p><img src="1723554469062.png" width="427" height="326" alt=""/></p>
+  <h3>2. Catboost</h3>
+  <p>Bayesian optimization method was used for parameter optimization.</p>
+  <p><img src="1723554292960.png" width="718" height="293" alt=""/></p>
+  <p><strong>The best parameters are as follows :</strong></p>
+  <p><img src="1723554330189.jpg" width="271" height="114" alt=""/></p>
+  <h2>Conclusion</h2>
+  <p><strong>Areas for Improvement :</strong> First, we need to understand the risk level classification of financial institutions in order to accurately judge the risk of loan status. Secondly, more data is needed for training. From the training results, the data distribution of dividing loan status into four levels is uneven. The overall result is good, but the effect is not good at some risk levels.</p>
+  <p>&nbsp;</p>
+</div>
+</body>
+</html>
